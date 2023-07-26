@@ -49,11 +49,12 @@ parser.add_argument(
 )
 
 opt = parser.parse_args()
+# resolution = (224, 224)
 resolution = (128, 128)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-train_set = CLEVR("train")
+train_set = CLEVR("train", resolution)
 model = SlotAttentionAutoEncoder(
     resolution, opt.num_slots, opt.num_iterations, opt.hid_dim
 ).to(device)
@@ -90,6 +91,12 @@ for epoch in range(opt.num_epochs):
 
         image = sample["image"].to(device)
         recon_combined, recons, masks, slots = model(image)
+
+        # print("recon_combined", recon_combined.shape)
+        # print("recons", recons.shape)
+        # print("masks", masks.shape)
+        # print("slots", slots.shape)
+
         loss = criterion(recon_combined, image)
         total_loss += loss.item()
 

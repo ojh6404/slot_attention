@@ -33,12 +33,15 @@ class PARTNET(Dataset):
 
 
 class CLEVR(Dataset):
-    def __init__(self, split="train"):
+    def __init__(self, split="train", resolution=(128, 128)):
         super(CLEVR, self).__init__()
 
         assert split in ["train", "val", "test"]
         self.split = split
-        self.root_dir = os.path.join("/tmp/data/CLEVR_v1.0/images", split)
+        self.resolution = resolution
+        self.root_dir = os.path.join(
+            "/home/oh/prog/slot-attention-pytorch/dataset/CLEVR_v1.0/images", split
+        )
         self.files = os.listdir(self.root_dir)
         self.img_transform = transforms.Compose([transforms.ToTensor()])
 
@@ -46,7 +49,7 @@ class CLEVR(Dataset):
         path = self.files[index]
         # image = Image.open(os.path.join(self.root_dir, path, "0.png")).convert("RGB")
         image = Image.open(os.path.join(self.root_dir, path)).convert("RGB")
-        image = image.resize((128, 128))
+        image = image.resize(self.resolution)
         image = self.img_transform(image)
         sample = {"image": image}
 
